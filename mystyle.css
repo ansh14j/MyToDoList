@@ -1,0 +1,27 @@
+<style> 
+input[type=text] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+input[type=submit].button {
+	background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+span {
+	text-transform: capitalize;
+    height: 20px;
+    width: 20px;
+}
+
+input[type=submit].del {
+	border-radius: 100%;
+}
+</style>
