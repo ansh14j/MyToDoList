@@ -1,4 +1,7 @@
 <!-- USING HTML AND PHP AND JS-->
+<!-- Next step is trying to get data from server using AJAX and update in DOM element
+	 But this is difficult to achieve without full control over DOM elements ie with php
+	 So use javascript framework to achieve that -->
 
 <?php
 // Start the session
@@ -11,7 +14,8 @@ function addItem($conn){
 		$newItem = $_POST['newItemName'];
 		$currentListName = $_POST['listName2'];
 		$currentUserID = intval($_POST['userID2']);
-		$sql = "INSERT INTO itemsList(itemName,listName,isChecked,userID) VALUES ('$newItem','$currentListName',false,'$currentUserID')";
+		$sql = "INSERT INTO itemsList(itemName,listName,isChecked,userID) 
+					VALUES ('$newItem','$currentListName',false,'$currentUserID')";
 		$retval = mysqli_query($conn, $sql);
 		if(!$retval){
 			die('Could not set data: ' . mysqli_error());	
@@ -19,20 +23,23 @@ function addItem($conn){
 	}
 }
 
-function deleteItem($conn){
-	if (isset($_POST['trashItemName'])) 
-	{
-		$currentListName = $_POST['listName1'];
-		$currentUserID = intval($_POST['userID1']);
-		$newItem = $_POST['trashItemName'];
-		$sql = "DELETE FROM itemsList WHERE itemName = '$newItem' AND listName = '$currentListName' AND userID = '$currentUserID'";
-		$retval = mysqli_query($conn, $sql);
+// function deleteItem($conn){
+// 	if (isset($_POST['trashItemName'])) 
+// 	{
+// 		$currentListName = $_POST['listName1'];
+// 		$currentUserID = intval($_POST['userID1']);
+// 		$newItem = $_POST['trashItemName'];
+// 		$sql = "DELETE FROM itemsList 
+// 					WHERE itemName = '$newItem' 
+// 						AND listName = '$currentListName' 
+// 							AND userID = '$currentUserID'";
+// 		$retval = mysqli_query($conn, $sql);
 
-		if(!$retval){
-			die('Could not delete data: ' . mysqli_error());	
-		}
-	}
-}
+// 		if(!$retval){
+// 			die('Could not delete data: ' . mysqli_error());	
+// 		}
+// 	}
+// }
 
 function deleteList($conn){
 	//deleting List from database
@@ -40,14 +47,18 @@ function deleteList($conn){
 		$currentListName = $_POST['trashListName'];
 		$currentUserID = intval($_POST['userID3']);
 		//$sql = "DROP TABLE $currentListName";
-		$sql = "DELETE FROM itemsList WHERE listName = '$currentListName' AND userID = '$currentUserID'";
+		$sql = "DELETE FROM itemsList 
+					WHERE listName = '$currentListName' 
+						AND userID = '$currentUserID'";
 		$retval = mysqli_query($conn, $sql);
 		if(!$retval){
 			die('Could not delete list: ' . mysqli_error());	
 		}
 
 		//deleting listName from list
-		$sql2 = "DELETE FROM lists WHERE listName = '$currentListName' AND userID = '$currentUserID'";
+		$sql2 = "DELETE FROM lists 
+					WHERE listName = '$currentListName' 
+						AND userID = '$currentUserID'";
 		$retval = mysqli_query($conn, $sql2);
 		if(!$retval){
 			die('Could not remove listName: ' . mysqli_error());	
@@ -60,7 +71,8 @@ function addList($conn){
 	if (isset($_POST['newListName'])) {
 		$newList = $_POST['newListName'];
 		$currentUserID = intval($_POST['userID4']);
-		$sql = "INSERT INTO lists(listName,userID) VALUES ('$newList','$currentUserID')";
+		$sql = "INSERT INTO lists(listName,userID) 
+						VALUES ('$newList','$currentUserID')";
 		$retval = mysqli_query($conn, $sql);
 		if(!$retval){
 			die('Could not add listName: ' . mysqli_error());	
@@ -83,15 +95,42 @@ function addList($conn){
         //get DOM data and send to server php side
         var checkBox = document.getElementById(checkBoxIndex);
         if (checkBox.checked == true){
-        		var url = "updateCheckBox.php?q=1&l=".concat(list).concat("&i=").concat(item).concat("&u=").concat(userID);
+        		var url = "updateCheckBox.php?q=1&l=".concat(list)
+											.concat("&i=").concat(item)
+												.concat("&u=").concat(userID);
             xmlhttp.open("GET",url,true);
 	        xmlhttp.send();
         } else {
-        		var url = "updateCheckBox.php?q=0&l=".concat(list).concat("&i=").concat(item).concat("&u=").concat(userID);
+        		var url = "updateCheckBox.php?q=0&l=".concat(list)
+											.concat("&i=").concat(item)
+												.concat("&u=").concat(userID);
            	xmlhttp.open("GET",url,true);
     		xmlhttp.send();
         }
     }
+
+	function deleteItem(str) {
+        xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+    		if (this.readyState == 4 && this.status == 200) {
+			//update DOM element without using recieved data
+			document.getElementById(str).elements[5].outerHTML = null;
+			document.getElementById(str).elements[4].outerHTML = null;
+			document.getElementById(str).elements[3].outerHTML = null;
+    		}
+  		};
+        //console.log(userID);
+        //get DOM data and send to server php side
+        var l = document.getElementById(str).elements[0].value
+        var u = document.getElementById(str).elements[1].value
+		var i = document.getElementById(str).elements[2].value
+		var url = "deleteItem.php?l=".concat(l)
+							.concat("&u=").concat(u)
+								.concat("&i=").concat(i);
+        xmlhttp.open("GET",url,true);
+	    xmlhttp.send();
+
+    }	
 	</script>
 </head>
 
@@ -110,7 +149,7 @@ function addList($conn){
 	   	echo 'Connected successfully</p>';
 
 		addItem($conn);
-		deleteItem($conn);
+		//deleteItem($conn);
 		deleteList($conn);
 		addList($conn);
 
@@ -157,21 +196,26 @@ function addList($conn){
 
 		   $currentListName = $rowLists['listName'];
 		   //Getting items from list
-		   $sql2 = "SELECT itemName FROM itemsList WHERE listName = '$currentListName' AND userID = '$currentUserID'";
+		   $sql2 = "SELECT itemName FROM itemsList 
+		   				WHERE listName = '$currentListName' 
+						   AND userID = '$currentUserID'";
 		   $retval2 = mysqli_query($conn, $sql2);
 		   if(! $retval2 ) {
 		      echo('Could not get data1: ' . mysqli_error());
 		   }
 
 		   //Getting checked status from list
-		   $sql3 = "SELECT isChecked FROM itemsList WHERE listName =  '$currentListName' AND userID = '$currentUserID'";
+		   $sql3 = "SELECT isChecked FROM itemsList 
+		   				WHERE listName =  '$currentListName' 
+							AND userID = '$currentUserID'";
 		   $retval3 = mysqli_query($conn, $sql3);
 		   if(! $retval3 ) {
 		      echo('Could not get data2: ' . mysqli_error());
 		   }
 		   	// index for checkbox using itemName
 		    $index2 = 0;
-			while($rowItems = mysqli_fetch_array($retval2, MYSQLI_ASSOC) and $rowChecked = mysqli_fetch_array($retval3, MYSQLI_ASSOC) ) {
+			while($rowItems = mysqli_fetch_array($retval2, MYSQLI_ASSOC) 
+				and $rowChecked = mysqli_fetch_array($retval3, MYSQLI_ASSOC) ) {
 		      	$index2 = $index2 + 1;
 
 		      	//setting variable to use in html dom
@@ -182,16 +226,39 @@ function addList($conn){
 		      	?>
 		      	<!-- html form to delete item -->
 
-		      	<form action="" method="POST">
-		        	<input type="hidden" name="listName1" value = "<?php echo $rowLists['listName']?> " required="required" />
-		        	<input type="hidden" name="userID1" value = "<?php echo $currentUserID?> " required="required" />
-		        	<input type="hidden" name="trashItemName" value = "<?php echo $rowItems['itemName']?> " required="required" />
-		      		<input class="del"type="submit" value="x">
+		      	<form action="" 
+				  		class="demo10" 
+				  			id="formId<?php echo $index1 ?>_<?php echo $index2 ?>">
+		        	<input type="hidden" 
+								name="listName1" 
+									value = "<?php echo $rowLists['listName']?>" 
+										required="required" />
+		        	<input type="hidden" 
+								name="userID1" 
+									value = "<?php echo $currentUserID?>" 
+										required="required" />
+		        	<input type="hidden" 
+								name="trashItemName" 
+									value = "<?php echo $rowItems['itemName']?>" 
+										required="required" />
+		      		<input class="del"
+					  			type="button" 
+								  	value="x" 
+									  	onclick=deleteItem("formId<?php echo $index1 ?>_<?php echo $index2 ?>")>
 		      		<!-- form for checkbox for item with respective id, connected to the database-->
-		        	<input class="isChecked" type="checkbox" id="myCheck<?php echo $index1 ?>_<?php echo $index2 ?>" value <?php echo $IsChecked ?> onclick="updateCheckBox(this.id, '<?php echo $rowLists['listName']?>', '<?php echo $rowItems['itemName']?>', '<?php echo $currentUserID?>')">
+		        	<input class="isChecked" 
+								type="checkbox" 
+									id="myCheck<?php echo $index1 ?>_<?php echo $index2 ?>" 
+										value <?php echo $IsChecked ?> 
+											onclick="updateCheckBox(this.id, 
+																	'<?php echo $rowLists['listName']?>', 
+																	'<?php echo $rowItems['itemName']?>', 
+																	'<?php echo $currentUserID?>')">
 		      		<!-- show list items in the page -->
-					<span class="isChecked" value <?php echo $IsChecked ?> ><?php echo $rowItems['itemName']?></span>
-		      		</form>
+					<input class="isChecked" 
+								value="<?php echo $rowItems['itemName']?>" 
+									disabled/>
+		      	</form>
 		      		</div>
 
 		      	<?php
@@ -199,17 +266,38 @@ function addList($conn){
 		   ?>
 		   
 		   <!-- html form to add item -->
-		   <form action="" method="POST">
-		      <input type="hidden" name="userID2" value = "<?php echo $currentUserID?> " required="required" />
-		      <input type="hidden" name="listName2" value = "<?php echo $rowLists['listName']?> " required="required" />
-		      Add new data: <input type="text" name="newItemName" required="required" />
-		      <input type="submit" class="button" value="Add"/>
+		   <form action="" 
+		   			method="POST" 
+					   id="addFormId<?php echo $index1 ?>_<?php echo $index2 ?>">
+		      <input type="hidden" 
+			  			name="userID2" 
+							value = "<?php echo $currentUserID?> " 
+								required="required" />
+		      <input type="hidden" 
+			  			name="listName2" 
+							value = "<?php echo $rowLists['listName']?> " 
+								required="required" />
+		      Add new data: <input type="text" 
+			  							name="newItemName" 
+									  		required="required" />
+		      <input type="submit" 
+			  			class="button" 
+						  value="Add"/>
 		   </form>
 		   <!-- html form to delete list -->
-		   <form action="" method="POST">
-		      <input type="hidden" name="userID3" value = "<?php echo $currentUserID?> " required="required" />
-			  <input type="hidden" name="trashListName" value = "<?php echo $rowLists['listName']?> " required="required" />
-		      <input type="submit" class="button" value="DeleteList"/>
+		   <form action=""
+		   			 method="POST">
+		      <input type="hidden" 
+			  			name="userID3" 
+							value = "<?php echo $currentUserID?> " 
+								required="required" />
+			  <input type="hidden" 
+			  			name="trashListName" 
+						  value = "<?php echo $rowLists['listName']?> " 
+						  	required="required" />
+		      <input type="submit" 
+			  			class="button" 
+							value="DeleteList"/>
 		   </form>
 
 		   <?php
@@ -218,10 +306,18 @@ function addList($conn){
 
     <!-- html form to add list -->
 	<h2>Add New List</h2>
-	<form action="" method="POST">
-	   <input type="hidden" name="userID4" value = "<?php echo $currentUserID?> " required="required" />
-	   Enter new list name: <input type="text" name="newListName" required="required" />
-	   <input class="button" type="submit" value="AddList"/>
+	<form action="" 
+			method="POST">
+	   <input type="hidden" 
+	   			name="userID4" 
+					value = "<?php echo $currentUserID?> " 
+						required="required" />
+	   Enter new list name: <input type="text" 
+	   									name="newListName" 
+										   required="required" />
+	   <input class="button" 
+	   			type="submit" 
+				   value="AddList"/>
 	</form>
 
 </body>

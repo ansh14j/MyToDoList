@@ -11,9 +11,9 @@ session_start();
    		}
            echo 'Connected successfully</p>';
            
-        if (isset($_POST['uP1'])) {
-            $currentUserName = $_POST['uN1'];
-            $currentUserPassword = $_POST['uP1'];   
+        if (isset($_POST['userPassword1'])) {
+            $currentUserName = $_POST['userName1'];
+            $currentUserPassword = $_POST['userPassword1'];   
             // echo $currentUserName;
             // echo $currentUserPassword;  
             $sql0 = "SELECT userID FROM users WHERE userName = '$currentUserName' AND userPassword = '$currentUserPassword'";
@@ -30,5 +30,7 @@ session_start();
 
             //echo "Favorite ID is: " . $_SESSION["loginUserID"] . ".<br>";
             //print_r($_SESSION);
+
+            header('Location: keep.php');
         }        
 ?>
