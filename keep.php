@@ -151,6 +151,7 @@ function addList($conn){
 		while($rowLists = mysqli_fetch_array($retval, MYSQLI_ASSOC)) {
 			//show list names on the page
 		   ?>
+		   <div id="container">
 		   <h4><span> <?php echo "{$rowLists['listName']} <br> ";?></span></h4>
 		   <?php
 		   $index1 = $index1 + 1;
@@ -191,8 +192,7 @@ function addList($conn){
 		        	<input class="isChecked" type="checkbox" id="myCheck<?php echo $index1 ?>_<?php echo $index2 ?>" value <?php echo $IsChecked ?> onclick="updateCheckBox(this.id, '<?php echo $rowLists['listName']?>', '<?php echo $rowItems['itemName']?>', '<?php echo $currentUserID?>')">
 		      		<!-- show list items in the page -->
 					<span class="isChecked" value <?php echo $IsChecked ?> ><?php echo $rowItems['itemName']?></span>
-		      		</form>
-		      		</div>
+		      	</form>
 
 		      	<?php
 		    }
@@ -202,7 +202,8 @@ function addList($conn){
 		   <form action="" method="POST">
 		      <input type="hidden" name="userID2" value = "<?php echo $currentUserID?> " required="required" />
 		      <input type="hidden" name="listName2" value = "<?php echo $rowLists['listName']?> " required="required" />
-		      Add new data: <input type="text" name="newItemName" required="required" />
+			  <span>Add new data: </br></span>
+			  <input type="text" name="newItemName" required="required" />
 		      <input type="submit" class="button" value="Add"/>
 		   </form>
 		   <!-- html form to delete list -->
@@ -211,16 +212,18 @@ function addList($conn){
 			  <input type="hidden" name="trashListName" value = "<?php echo $rowLists['listName']?> " required="required" />
 		      <input type="submit" class="button" value="DeleteList"/>
 		   </form>
-
+		   </div>
 		   <?php
 		}
 	?>
 
-    <!-- html form to add list -->
+	<!-- html form to add list -->
+	<div id="container">
 	<h2>Add New List</h2>
 	<form action="" method="POST">
 	   <input type="hidden" name="userID4" value = "<?php echo $currentUserID?> " required="required" />
-	   Enter new list name: <input type="text" name="newListName" required="required" />
+	   <span>Enter new list name:</br></span> 
+	   <input type="text" name="newListName" required="required" />
 	   <input class="button" type="submit" value="AddList"/>
 	</form>
 
