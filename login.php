@@ -30,7 +30,9 @@ session_start();
 
             //echo "Favorite ID is: " . $_SESSION["loginUserID"] . ".<br>";
             //print_r($_SESSION);
-
+            if($currentUserID)
             header('Location: keep.php');
+            else
+            echo "Incorrect user id or password";
         }        
 ?>

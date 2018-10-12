@@ -8,78 +8,6 @@
 session_start();
 ?>
 
-<?php
-function addItem($conn){
-	if (isset($_POST['newItemName'])) {
-		$newItem = $_POST['newItemName'];
-		$currentListName = $_POST['listName2'];
-		$currentUserID = intval($_POST['userID2']);
-		$sql = "INSERT INTO itemsList(itemName,listName,isChecked,userID) 
-					VALUES ('$newItem','$currentListName',false,'$currentUserID')";
-		$retval = mysqli_query($conn, $sql);
-		if(!$retval){
-			die('Could not set data: ' . mysqli_error());	
-		}
-	}
-}
-
-// function deleteItem($conn){
-// 	if (isset($_POST['trashItemName'])) 
-// 	{
-// 		$currentListName = $_POST['listName1'];
-// 		$currentUserID = intval($_POST['userID1']);
-// 		$newItem = $_POST['trashItemName'];
-// 		$sql = "DELETE FROM itemsList 
-// 					WHERE itemName = '$newItem' 
-// 						AND listName = '$currentListName' 
-// 							AND userID = '$currentUserID'";
-// 		$retval = mysqli_query($conn, $sql);
-
-// 		if(!$retval){
-// 			die('Could not delete data: ' . mysqli_error());	
-// 		}
-// 	}
-// }
-
-function deleteList($conn){
-	//deleting List from database
-	if (isset($_POST['trashListName'])){
-		$currentListName = $_POST['trashListName'];
-		$currentUserID = intval($_POST['userID3']);
-		//$sql = "DROP TABLE $currentListName";
-		$sql = "DELETE FROM itemsList 
-					WHERE listName = '$currentListName' 
-						AND userID = '$currentUserID'";
-		$retval = mysqli_query($conn, $sql);
-		if(!$retval){
-			die('Could not delete list: ' . mysqli_error());	
-		}
-
-		//deleting listName from list
-		$sql2 = "DELETE FROM lists 
-					WHERE listName = '$currentListName' 
-						AND userID = '$currentUserID'";
-		$retval = mysqli_query($conn, $sql2);
-		if(!$retval){
-			die('Could not remove listName: ' . mysqli_error());	
-		}
-	}
-}
-
-function addList($conn){
-	//adding listName in lists of database
-	if (isset($_POST['newListName'])) {
-		$newList = $_POST['newListName'];
-		$currentUserID = intval($_POST['userID4']);
-		$sql = "INSERT INTO lists(listName,userID) 
-						VALUES ('$newList','$currentUserID')";
-		$retval = mysqli_query($conn, $sql);
-		if(!$retval){
-			die('Could not add listName: ' . mysqli_error());	
-		}
-	}
-}
-?>
 
 
 <!DOCTYPE html>
@@ -109,217 +37,330 @@ function addList($conn){
         }
     }
 
-	function deleteItem(str) {
+	function deleteItem(str,l,u,i) {
         xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
     		if (this.readyState == 4 && this.status == 200) {
 			//update DOM element without using recieved data
-			document.getElementById(str).elements[5].outerHTML = null;
-			document.getElementById(str).elements[4].outerHTML = null;
-			document.getElementById(str).elements[3].outerHTML = null;
-    		}
+			//document.getElementById(str).elements[2].outerHTML = null;
+			//document.getElementById(str).elements[1].outerHTML = null;
+			//document.getElementById(str).elements[0].outerHTML = null;
+			document.getElementById(str).outerHTML = null;
+			}
   		};
         //console.log(userID);
         //get DOM data and send to server php side
-        var l = document.getElementById(str).elements[0].value
-        var u = document.getElementById(str).elements[1].value
-		var i = document.getElementById(str).elements[2].value
 		var url = "deleteItem.php?l=".concat(l)
 							.concat("&u=").concat(u)
 								.concat("&i=").concat(i);
         xmlhttp.open("GET",url,true);
 	    xmlhttp.send();
+	}
 
-    }	
-	</script>
-</head>
 
-<body>
-	<?php
-		//connect to mysql database
-		$dbhost = 'localhost';
-		$dbuser = 'ansh';
-		$dbpass = 'mypassword';
-		$dbname = 'mykeep5';
-		$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+	function deleteList(str, l){
 
-		if(! $conn ) {
-      		die('Could not connect: ' . mysqli_connect_error());
-   		}
-	   	echo 'Connected successfully</p>';
+		xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+    		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById(str).outerHTML = null;
+			}
+  		};
+        //console.log(userID);
+        //get DOM data and send to server php side
+		var url = "deleteList.php?l=".concat(l);
+        xmlhttp.open("GET",url,true);
+	    xmlhttp.send();	
+	}
 
-		addItem($conn);
-		//deleteItem($conn);
-		deleteList($conn);
-		addList($conn);
+	function addItem(str,l,u) {
+        xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+    		if (this.readyState == 4 && this.status == 200) {
+			//update DOM element without using recieved data
+			//location.reload();
+			makeli(document.getElementById('list_'.concat(l)),i,l,0);
+			document.getElementById(str).outerHTML = null;
+			makeInputText(document.getElementById('list_'.concat(l)),l);
+			makeDeleteList(document.getElementById('list_'.concat(lName)),lName);
+			}
+  		};
+        //console.log(userID);
+        //get DOM data and send to server php side
+		var i = document.getElementById(str).elements[0].value;
+		var url = "addItem.php?l=".concat(l)
+							.concat("&u=").concat(u)
+								.concat("&i=").concat(i);
+        xmlhttp.open("GET",url,true);
+	    xmlhttp.send();
+	}
 
-		// //For first run Create table of lists
-		// $sql4 = "CREATE TABLE users(userID INT AUTO_INCREMENT NOT NULL, userName VARCHAR(255), userPassword VARCHAR(255), PRIMARY KEY (userID))";
-		// $retval = mysqli_query($conn, $sql4);
-		// echo 'adding table of users</p>';
-		// if(!$retval){
-		// 	die('Could not create list of users: ' . mysqli_error());	
-		// }
-		// // For first run Create list of items
-		// $sql5 = "CREATE TABLE lists(listID INT AUTO_INCREMENT NOT NULL, listName VARCHAR(255), userID VARCHAR(255), PRIMARY KEY (listID))";
-		// $retval = mysqli_query($conn, $sql5);
-		// echo 'adding table of lists</p>';
-		// if(!$retval){
-		// 	die('Could not create list of lists: ' . mysqli_error());	
-		// }
-		// // For first run Create list of users
-		// $sql6 = "CREATE TABLE itemsList(itemID INT AUTO_INCREMENT,itemName VARCHAR(255),isChecked INT,listName VARCHAR(255),userID VARCHAR(255), PRIMARY KEY (itemID))";
-		// $retval = mysqli_query($conn, $sql6);
-		// if(!$retval){
-		// 	die('Could not create items table: ' . mysqli_error());	
-		// }
+	function addList(str) {
+        xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+    		if (this.readyState == 4 && this.status == 200) {
+			//update DOM element without using recieved data
+			//location.reload();
+			makeUL(document.getElementById('demo21'), l);
+				makeDeleteList(document.getElementById('list_'.concat(l)),l);
+				makeInputText(document.getElementById('list_'.concat(l)),l);
+			}
+  		};
+        //console.log(userID);
+        //get DOM data and send to server php side
+		var l = document.getElementById(str).elements[0].value;
+		var url = "addList.php?l=".concat(l);
+        xmlhttp.open("GET",url,true);
+	    xmlhttp.send();
+	}
 
-		//print_r($_SESSION);   
-		$currentUserID = intval($_SESSION['loginUserID']);
-        //echo $currentUserID;
-
-		//Getting list of lists from database
-		$sql = "SELECT listName FROM lists WHERE userID = '$currentUserID'";
-		$retval = mysqli_query( $conn, $sql );
-		if(! $retval ) {
-		   die('Could not get listName: ' . mysqli_error());
+	function enterAddList(event,str){
+		var x = event.key;
+			
+		if(x==="Enter"){
+			xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				//update DOM element without using recieved data
+				//location.reload();
+				makeUL(document.getElementById('demo21'), l);
+				makeDeleteList(document.getElementById('list_'.concat(l)),l);
+				makeInputText(document.getElementById('list_'.concat(l)),l);
+				}
+			};
+			//console.log(userID);
+			//get DOM data and send to server php side
+			var l = document.getElementById(str).elements[0].value;
+		var url = "addList.php?l=".concat(l);
+        xmlhttp.open("GET",url,true);
+	    xmlhttp.send();
 		}
+	}
+
+	function enterPressed(event,str,l,u){
+		var x = event.key;
+		var i = document.getElementById(str).value;
+			
+		if(x==="Enter"){
+			xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				//update DOM element without using recieved data
+				//location.reload();
+				//if(document.getElementById('list_'.concat(l)))
+					//makeUL(document.getElementById('demo21'),l);
+				makeli(document.getElementById('list_'.concat(l)),i,l,0);
+				document.getElementById(str).outerHTML = null;
+				makeInputText(document.getElementById('list_'.concat(l)),l);
+				document.getElementById(str).focus();
+				console.log(2);
+				}
+			};
+			//console.log(userID);
+			//get DOM data and send to server php side
+			//var i = document.getElementById(str).value;
+			var url = "addItem.php?l=".concat(l)
+								.concat("&u=").concat(u)
+									.concat("&i=").concat(i);
+			xmlhttp.open("GET",url,true);
+			xmlhttp.send();	
+		}
+	}
+
+
+	function makeUL(list,arrayitem) {
+	    // Create the list element:
+	        // Create the list item:
+	        var item = document.createElement('ul');
+			item.id = "list_".concat(arrayitem);
+			item.style="list-style-type:none";
+			//item.style="font-weight:bold";
+
+	        // Set its contents:
+	        item.appendChild(document.createTextNode(arrayitem));
+
+	        // Add it to the list:
+	        list.appendChild(item);
+
+	    // Finally, return the constructed list:
+	    return list;
+		}
+
+	function makeli(list,arrayitem,listName, isChecked) {
+	    // Create the list element:
+	        // Create the list item:
+	        var item = document.createElement('li');
+			item.id = "item_".concat(listName).concat(arrayitem);
+
+	        // Set its contents:
+	        item.appendChild(document.createTextNode(arrayitem));
+
+	        // Add it to the list:
+			list.appendChild(item);
+			makeDelete(document.getElementById('item_'.concat(listName).concat(arrayitem)),listName,arrayitem);
+			makeCheckBox(document.getElementById('item_'.concat(listName).concat(arrayitem)), arrayitem, isChecked, listName);
+
+	    // Finally, return the constructed list:
+	    return list;
+	}
+
+	function makeCheckBox(domID, arrayitem, isChecked,listName) {
+	    // Create the list element:
+	        // Create the list item:
+	        var item = document.createElement('input');	
+			item.id = "item_".concat(listName).concat(arrayitem).concat(isChecked);
+			item.class= "isChecked";
+			item.type="checkbox";
+			//Note: not able to display value of checkbox while website loads
+			if(isChecked==1){
+				item.checked = true;
+				//console.log("0");
+			}
+			else
+				item.checked= false;
+			item.onclick=function(){updateCheckBox(item.id, listName,arrayitem,"abc");}
+																	
+			
+	        // Add it to the list:
+	        domID.appendChild(item);
+	    // Finally, return the constructed list:
+	    //return list;
+		}
+
+
+	function makeDelete(domID,listName,itemName) {
+	    // Create the list element:
+	        // Create the list item:
+	        var item = document.createElement('input');
+			item.id = "item_".concat(listName).concat(itemName);
+			item.class= "del";
+			item.type="button";
+			item.value="x";
+			item.onclick=function(){deleteItem(item.id, listName,'abc',itemName);}
+																				
+	        // Add it to the list:
+	        domID.appendChild(item);
+	    // Finally, return the constructed list:
+	    //return list;
+		}
+	
+	function makeDeleteList(domID,listName) {
+	    // Create the list element:
+	        // Create the list item:
+	        var item = document.createElement('input');
+			item.id = "list_".concat(listName);
+			item.classList= "del2";
+			item.type="button";
+			item.value="Delete List";
+			item.onclick=function(){deleteList(item.id, listName);}
+																				
+	        // Add it to the list:
+	        domID.appendChild(item);
+	    // Finally, return the constructed list:
+	    //return list;
+		}
+	
+	function makeInputText(domID,listName) {
+	    // Create the list element:	    
+	        // Create the list item:
+	        var item = document.createElement('input');
+			item.id = "input_".concat(listName);
+			item.type="text";
+			item.required="required";
+			item.onkeydown=function(){enterPressed(event, item.id, listName,'abc');}											
+	        // Add it to the list:
+	        domID.appendChild(item);
+	    // Finally, return the constructed list:
+	    //return list;
+		}
+
+	
+
+
+	function getlist(){
+		xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				//update DOM element without using recieved data
+				var myObj = JSON.parse(this.responseText);
+				//document.getElementById("demo21").outerHTML = myObj;
+				let i = 0;		
+				while(myObj[i])
+				{
+					console.log(myObj[i].listName);
+					//	document.getElementById('demo21').outerHTML=myObj[2].listName;
+					//document.getElementById('demo21').innerHTML=myObj[i].listName;
+					makeUL(document.getElementById('demo21'), myObj[i].listName);
+					getItems(myObj[i].listName);
+					i++;
+				}
+	 		}
+		};
+		var url = "getlist.php";
+        xmlhttp.open("GET",url,true);
+		xmlhttp.send();
 		
-		// index for checkbox using listName		
-		$index1 = 0;
-		while($rowLists = mysqli_fetch_array($retval, MYSQLI_ASSOC)) {
-			//show list names on the page
-		   ?>
-		   <h4><span> <?php echo "{$rowLists['listName']} <br> ";?></span></h4>
-		   <?php
-		   $index1 = $index1 + 1;
+	}
+	
+	function getItems(lName){
+		xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				//update DOM element without using recieved data
+				let myObj = JSON.parse(this.responseText);
+				//document.getElementById("demo21").outerHTML = myObj;
+				let j = 0;	
+				//makeUL(document.getElementById('demo21'), lName);
+				makeDeleteList(document.getElementById('list_'.concat(lName)),lName);	
+				while(myObj[j])
+				{
+					//console.log(myObj[i].listName);
+					//	document.getElementById('demo21').outerHTML=myObj[2].listName;
+					//document.getElementById('demo21').innerHTML=myObj[i].listName;
+					//console.log(i);
+					console.log(j);
+					makeli(document.getElementById('list_'.concat(lName)), myObj[j].itemName,lName, myObj[j].isChecked);
+//					//makeCheckBox(document.getElementById('list_'.concat(lName)), myObj[i].itemName, myObj[i].isChecked,lName);
+					
+					j++;
+				}
+				makeInputText(document.getElementById('list_'.concat(lName)),lName);
+	 		}
+		};
+		var url = "getItem.php?l=".concat(lName);
+        xmlhttp.open("GET",url,true);
+		xmlhttp.send();
+		
+	}
 
-		   $currentListName = $rowLists['listName'];
-		   //Getting items from list
-		   $sql2 = "SELECT itemName FROM itemsList 
-		   				WHERE listName = '$currentListName' 
-						   AND userID = '$currentUserID'";
-		   $retval2 = mysqli_query($conn, $sql2);
-		   if(! $retval2 ) {
-		      echo('Could not get data1: ' . mysqli_error());
-		   }
+	</script>
 
-		   //Getting checked status from list
-		   $sql3 = "SELECT isChecked FROM itemsList 
-		   				WHERE listName =  '$currentListName' 
-							AND userID = '$currentUserID'";
-		   $retval3 = mysqli_query($conn, $sql3);
-		   if(! $retval3 ) {
-		      echo('Could not get data2: ' . mysqli_error());
-		   }
-		   	// index for checkbox using itemName
-		    $index2 = 0;
-			while($rowItems = mysqli_fetch_array($retval2, MYSQLI_ASSOC) 
-				and $rowChecked = mysqli_fetch_array($retval3, MYSQLI_ASSOC) ) {
-		      	$index2 = $index2 + 1;
 
-		      	//setting variable to use in html dom
-		      	if($rowChecked['isChecked']==1)
-		      		$IsChecked = checked;
-		      	else
-		      		$IsChecked = unchecked;
-		      	?>
-		      	<!-- html form to delete item -->
+</head>
+<body>
 
-		      	<form action="" 
-				  		class="demo10" 
-				  			id="formId<?php echo $index1 ?>_<?php echo $index2 ?>">
-		        	<input type="hidden" 
-								name="listName1" 
-									value = "<?php echo $rowLists['listName']?>" 
-										required="required" />
-		        	<input type="hidden" 
-								name="userID1" 
-									value = "<?php echo $currentUserID?>" 
-										required="required" />
-		        	<input type="hidden" 
-								name="trashItemName" 
-									value = "<?php echo $rowItems['itemName']?>" 
-										required="required" />
-		      		<input class="del"
-					  			type="button" 
-								  	value="x" 
-									  	onclick=deleteItem("formId<?php echo $index1 ?>_<?php echo $index2 ?>")>
-		      		<!-- form for checkbox for item with respective id, connected to the database-->
-		        	<input class="isChecked" 
-								type="checkbox" 
-									id="myCheck<?php echo $index1 ?>_<?php echo $index2 ?>" 
-										value <?php echo $IsChecked ?> 
-											onclick="updateCheckBox(this.id, 
-																	'<?php echo $rowLists['listName']?>', 
-																	'<?php echo $rowItems['itemName']?>', 
-																	'<?php echo $currentUserID?>')">
-		      		<!-- show list items in the page -->
-					<input class="isChecked" 
-								value="<?php echo $rowItems['itemName']?>" 
-									disabled/>
-		      	</form>
-		      		</div>
+<div id="demo21"></div>
 
-		      	<?php
-		    }
-		   ?>
-		   
-		   <!-- html form to add item -->
-		   <form action="" 
-		   			method="POST" 
-					   id="addFormId<?php echo $index1 ?>_<?php echo $index2 ?>">
-		      <input type="hidden" 
-			  			name="userID2" 
-							value = "<?php echo $currentUserID?> " 
-								required="required" />
-		      <input type="hidden" 
-			  			name="listName2" 
-							value = "<?php echo $rowLists['listName']?> " 
-								required="required" />
-		      Add new data: <input type="text" 
-			  							name="newItemName" 
-									  		required="required" />
-		      <input type="submit" 
-			  			class="button" 
-						  value="Add"/>
-		   </form>
-		   <!-- html form to delete list -->
-		   <form action=""
-		   			 method="POST">
-		      <input type="hidden" 
-			  			name="userID3" 
-							value = "<?php echo $currentUserID?> " 
-								required="required" />
-			  <input type="hidden" 
-			  			name="trashListName" 
-						  value = "<?php echo $rowLists['listName']?> " 
-						  	required="required" />
-		      <input type="submit" 
-			  			class="button" 
-							value="DeleteList"/>
-		   </form>
+<script>
+	getlist();	
+</script>
 
-		   <?php
-		}
-	?>
 
+	<div id="container1">
     <!-- html form to add list -->
 	<h2>Add New List</h2>
-	<form action="" 
-			method="POST">
-	   <input type="hidden" 
-	   			name="userID4" 
-					value = "<?php echo $currentUserID?> " 
-						required="required" />
-	   Enter new list name: <input type="text" 
-	   									name="newListName" 
-										   required="required" />
-	   <input class="button" 
-	   			type="submit" 
-				   value="AddList"/>
+	<form id="newList">
+	   <span>Enter new list name:</br></span> 
+		<input type="text" 
+				name="newListName" 
+					   required
+					   		onkeydown="enterAddList(event,'newList')"/>
+	   <input class="del2" 
+	   			type="button" 
+				   value="AddList"
+				   		onclick="addList('newList')"/>
 	</form>
+	</div>
 
 </body>
-
 </html>

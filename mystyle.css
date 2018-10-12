@@ -1,18 +1,20 @@
-<style> 
 input[type=text] {
-    padding: 12px 20px;
-    margin: 8px 0;
+    padding: 2px 4px;
+    margin: 6px 0;
     box-sizing: border-box;
 }
-input[type=submit].button {
+
+input[type=button].del2 {
 	background-color: #4CAF50; /* Green */
     border: none;
     color: white;
-    padding: 12px 20px;
+    padding: 2px 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
+    font-size: 14px;
+    float: right;
+    width:40%;
 }
 
 span {
@@ -21,7 +23,57 @@ span {
     width: 20px;
 }
 
-input[type=submit].del {
+input[value=x] {
 	border-radius: 100%;
 }
-</style>
+body {
+    background-color: #e8e8e8; 
+    width: 960px;
+	margin:0 auto;
+	overflow: auto; 
+}
+
+#container1{
+    width: 250px;
+    height: 200px;
+    margin:10px;
+    padding:10px 15px;
+    border:#ccc solid 1 px;
+    border-radius: 4px;
+    background:#fff;
+    overflow: scroll;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    float: left;
+}
+
+
+ul{
+    text-transform: capitalize;
+    font-weight: bold;
+    width: 250px;
+    height: 200px;
+    margin:10px;
+    padding:10px 15px;
+    border:#ccc solid 1 px;
+    border-radius: 4px;
+    background:#fff;
+    overflow: scroll;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    float: left;
+
+}
+
+input[type=checkbox]{
+    float:left;   
+}
+
+
+input[type=button]{
+    float:left;   
+}
+
+li{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    font-weight: normal;
+}

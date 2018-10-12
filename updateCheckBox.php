@@ -11,7 +11,9 @@ session_start();
 $q = intval($_GET['q']);
 $l = $_GET['l'];
 $i = $_GET['i'];
-$u = intval($_GET['u']);
+//$u = intval($_GET['u']);
+$u = intval($_SESSION['loginUserID']);
+            
 
 $con = mysqli_connect('localhost','ansh','mypassword','mykeep5');
 if (!$con) {

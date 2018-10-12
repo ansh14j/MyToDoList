@@ -17,7 +17,7 @@
 <h2>Enter User Name and Password</h2>
 	<form action="signup.php" method="POST">
 	   <input type="text" name="userName2" required="required"/>
-	   <input type="password" name="userPassword2" required="required"/>
+	   <input type="text" name="userPassword2" required="required"/>
        <input class="button" type="submit" value="ADD User"/>
 	</form>
 

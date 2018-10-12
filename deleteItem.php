@@ -13,7 +13,8 @@ session_start();
            //echo $_GET['i'];           
         if (isset($_GET['i'])) {
     		$currentListName = $_GET['l'];
-	    	$currentUserID = intval($_GET['u']);
+			//$currentUserID = intval($_GET['u']);
+			$currentUserID = intval($_SESSION['loginUserID']);
 		    $newItem = $_GET['i'];
     		$sql = "DELETE FROM itemsList WHERE itemName = '$newItem' AND listName = '$currentListName' AND userID = '$currentUserID'";
 	    	$retval = mysqli_query($conn, $sql);
