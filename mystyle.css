@@ -23,9 +23,6 @@ span {
     width: 20px;
 }
 
-input[value=x] {
-	border-radius: 100%;
-}
 body {
     background-color: #e8e8e8; 
     width: 960px;
@@ -50,6 +47,7 @@ body {
 ul{
     text-transform: capitalize;
     font-weight: bold;
+    font:20px arial;
     width: 250px;
     height: 200px;
     margin:10px;
@@ -65,15 +63,26 @@ ul{
 
 input[type=checkbox]{
     float:left;   
+    padding: 2px 2px;
 }
 
 
-input[type=button]{
-    float:left;   
+input[value='x']{
+    border-radius: 100%;
+    float:right;   
 }
 
 li{
     font-family: "Times New Roman", Times, serif;
     font-size: 16px;
     font-weight: normal;
+    padding: 2px 2px;
+}
+
+li:hover{
+    background-color: lightgrey;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    font-weight: normal;
+    padding: 2px 2px;
 }

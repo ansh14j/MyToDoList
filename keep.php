@@ -17,44 +17,49 @@ session_start();
 	<link rel="stylesheet" type="text/css" href="mystyle.css">
 
 	<script>
+	
 	function updateCheckBox(checkBoxIndex,list,item,userID) {
         xmlhttp = new XMLHttpRequest();
         console.log(userID);
         //get DOM data and send to server php side
         var checkBox = document.getElementById(checkBoxIndex);
-        if (checkBox.checked == true){
+		var data = document.getElementById("item_".concat(list).concat(item));
+		if (checkBox.checked == true){
         		var url = "updateCheckBox.php?q=1&l=".concat(list)
 											.concat("&i=").concat(item)
 												.concat("&u=").concat(userID);
+			data.style='text-decoration:line-through;opacity: .5';
+				
             xmlhttp.open("GET",url,true);
 	        xmlhttp.send();
         } else {
         		var url = "updateCheckBox.php?q=0&l=".concat(list)
 											.concat("&i=").concat(item)
 												.concat("&u=").concat(userID);
+				data.style='text-decoration:none';
            	xmlhttp.open("GET",url,true);
     		xmlhttp.send();
         }
     }
 
 	function deleteItem(str,l,u,i) {
-        xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function() {
-    		if (this.readyState == 4 && this.status == 200) {
-			//update DOM element without using recieved data
-			//document.getElementById(str).elements[2].outerHTML = null;
-			//document.getElementById(str).elements[1].outerHTML = null;
-			//document.getElementById(str).elements[0].outerHTML = null;
-			document.getElementById(str).outerHTML = null;
-			}
-  		};
-        //console.log(userID);
-        //get DOM data and send to server php side
-		var url = "deleteItem.php?l=".concat(l)
-							.concat("&u=").concat(u)
-								.concat("&i=").concat(i);
-        xmlhttp.open("GET",url,true);
-	    xmlhttp.send();
+		var r = confirm("Do you want to delete it!");
+    	if (r == true) {
+			xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				//update DOM element without using recieved data
+				document.getElementById(str).outerHTML = null;
+				}
+			};
+			//console.log(userID);
+			//get DOM data and send to server php side
+			var url = "deleteItem.php?l=".concat(l)
+								.concat("&u=").concat(u)
+									.concat("&i=").concat(i);
+			xmlhttp.open("GET",url,true);
+			xmlhttp.send();
+		}
 	}
 
 
@@ -211,9 +216,11 @@ session_start();
 			item.id = "item_".concat(listName).concat(arrayitem).concat(isChecked);
 			item.class= "isChecked";
 			item.type="checkbox";
+			var data = document.getElementById("item_".concat(listName).concat(arrayitem));
 			//Note: not able to display value of checkbox while website loads
 			if(isChecked==1){
 				item.checked = true;
+				data.style='text-decoration:line-through;opacity: .5';
 				//console.log("0");
 			}
 			else
