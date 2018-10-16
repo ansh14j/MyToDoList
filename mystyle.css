@@ -1,7 +1,18 @@
 input[type=text] {
+    width: 100%;
     padding: 2px 4px;
     margin: 6px 0;
     box-sizing: border-box;
+    outline: none;
+    font: 80% arial;
+}
+
+input[type=password] {
+    width: 100%;
+    padding: 2px 4px;
+    margin: 6px 0;
+    box-sizing: border-box;
+    outline: none;
 }
 
 input[type=button].del2 {
@@ -70,6 +81,15 @@ input[type=checkbox]{
 input[value='x']{
     border-radius: 100%;
     float:right;   
+    opacity:0;
+}
+
+input[value='x']:hover{
+    border-radius: 100%;
+    float:right;  
+    background-color: black;
+    color:white;
+    opacity:1; 
 }
 
 li{

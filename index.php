@@ -5,8 +5,8 @@
 
 </head>
 <body>
-<div class="row" style="text-align: center">
-	<div class="col-sm-12">
+
+	<div>
 		<div class="card">
 			<h2>Login Page</h2>
 			<h3>Enter User Name and Password</h3>
@@ -19,7 +19,7 @@
 		</div>
 	</div>
 
-	<div class="col-sm-12">
+	<div>
 		<div class="card">
 			<h2>SignUp Page</h2>
 			<h3>Enter User Name and Password</h3>
@@ -30,7 +30,7 @@
 				</form>
 		</div>
 	</div>
-</div>
+
 				
 
 </body>
