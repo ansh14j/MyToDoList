@@ -224,7 +224,7 @@ session_start();
 		var newItem = document.createElement("input");
 		console.log('item_'.concat(listName).concat(arrayitem));
 		newItem.value = document.getElementById('item_'.concat(listName).concat(arrayitem)).innerText;
-		newItem.style = 'width:70%; border:none; border-bottom:1px solid lightgrey; border-top:1px solid lightgrey; padding:8px 20px;';
+		newItem.style = 'width:100%; border:none; border-bottom:1px solid lightgrey; border-top:1px solid lightgrey;outline: none;padding:4px 20px;font:70% helvetica;';
 		newItem.id = "new";
 		
 		//newItem.focus();

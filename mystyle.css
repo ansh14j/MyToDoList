@@ -3,12 +3,16 @@ input[type=text] {
     padding: 8px 20px;
     margin: 8px 0;
     box-sizing: border-box;
+    outline: none;
+    font: 80% arial;
 }
+
 input[type=password] {
     width: 100%;
     padding: 8px 20px;
     margin: 8px 0;
     box-sizing: border-box;
+    outline: none;
 }
 
 input[type=button].del2 {
