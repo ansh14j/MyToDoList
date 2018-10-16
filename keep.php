@@ -1,7 +1,5 @@
 <!-- USING HTML AND PHP AND JS-->
-<!-- Next step is trying to get data from server using AJAX and update in DOM element
-	 But this is difficult to achieve without full control over DOM elements ie with php
-	 So use javascript framework to achieve that -->
+<!-- Next step using correct declaration of id, so that items can be updated-->
 
 <?php
 // Start the session
@@ -18,11 +16,16 @@ session_start();
 
 	<script>
 	
-	function updateCheckBox(checkBoxIndex,list,item,userID) {
+	function updateCheckBox(itemId,list,item,userID) {
         xmlhttp = new XMLHttpRequest();
         console.log(userID);
         //get DOM data and send to server php side
-        var checkBox = document.getElementById(checkBoxIndex);
+		console.log(itemId);
+        console.log(itemId.childNodes[2]);
+        console.log((itemId).childNodes[2].chekced);
+		
+		var checkBox = itemId.childNodes[2];
+		//console.log(document.getElementById(itemId).childNodes[2]);
 		var data = document.getElementById("item_".concat(list).concat(item));
 		if (checkBox.checked == true){
         		var url = "updateCheckBox.php?q=1&l=".concat(list)
@@ -50,6 +53,7 @@ session_start();
 				if (this.readyState == 4 && this.status == 200) {
 				//update DOM element without using recieved data
 				document.getElementById(str).outerHTML = null;
+				document.getElementById('item_'.concat(l).concat(i)).outerHTML = null;
 				}
 			};
 			//console.log(userID);
@@ -195,25 +199,92 @@ session_start();
 	    // Create the list element:
 	        // Create the list item:
 	        var item = document.createElement('li');
+			var itemText = document.createElement('span');
 			item.id = "item_".concat(listName).concat(arrayitem);
-
+			
 	        // Set its contents:
-	        item.appendChild(document.createTextNode(arrayitem));
+	        itemText.appendChild(document.createTextNode(arrayitem));
+			item.appendChild(itemText);
 
 	        // Add it to the list:
 			list.appendChild(item);
 			makeDelete(document.getElementById('item_'.concat(listName).concat(arrayitem)),listName,arrayitem);
 			makeCheckBox(document.getElementById('item_'.concat(listName).concat(arrayitem)), arrayitem, isChecked, listName);
 
+			console.log(document.getElementById('item_'.concat(listName).concat(arrayitem)).childNodes[0]);
+			document.getElementById('item_'.concat(listName).concat(arrayitem)).childNodes[0].onclick=function(event){makeChangeText(this,listName);}
+
 	    // Finally, return the constructed list:
 	    return list;
 	}
+
+	function makeChangeText(aitem, listName){
+		var arrayitem = aitem.innerText;
+		console.log(arrayitem);
+		var newItem = document.createElement("input");
+		console.log('item_'.concat(listName).concat(arrayitem));
+		newItem.value = document.getElementById('item_'.concat(listName).concat(arrayitem)).innerText;
+		newItem.style = 'width:70%; border:none; border-bottom:1px solid lightgrey; border-top:1px solid lightgrey; padding:8px 20px;';
+		newItem.id = "new";
+		
+		//newItem.focus();
+
+		var list = document.getElementById("list_".concat(listName));
+		list.insertBefore(newItem, document.getElementById('item_'.concat(listName).concat(arrayitem)));
+		document.getElementById('new').focus();
+		document.getElementById('item_'.concat(listName).concat(arrayitem)).style='display:none';
+		// document.getElementById('item_del_'.concat(listName).concat(arrayitem)).style='display:block';
+		// document.getElementById('item_input_'.concat(listName).concat(arrayitem)).style='display:block';
+		
+		newItem.onkeydown=function(){changeData(event, arrayitem, listName, "new");}											
+	}
+
+	function changeData(event, arrayitem, listName, input_id){
+		var x = event.key;
+		var i = document.getElementById(input_id).value;
+			
+		if(x==="Enter"){
+			xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				
+					//document.getElementById('item_'.concat(listName).concat(arrayitem)).id='item_input_'.concat(listName).concat(i);
+					//document.getElementById('item_'.concat(listName).concat(arrayitem)).id='item_del_'.concat(listName).concat(i);
+					console.log( 'item_'.concat(listName).concat(i));
+					document.getElementById('item_'.concat(listName).concat(arrayitem)).childNodes[0].innerText=i;				///why not innerHTML
+					console.log(document.getElementById('item_'.concat(listName).concat(arrayitem)).childNodes[0].innerText); ///childNodes[0]
+					document.getElementById('item_'.concat(listName).concat(arrayitem)).id='item_'.concat(listName).concat(i);
+					//document.getElementById('item_'.concat(listName).concat(i)).childNodes[0].innerText=i;
+					console.log( 'item_'.concat(listName).concat(i));
+					console.log(document.getElementById('item_'.concat(listName).concat(i)).childNodes[0].innerText);
+					document.getElementById('item_'.concat(listName).concat(i)).style='display:block';
+					//document.getElementById('item_del_'.concat(listName).concat(i)).style='display:block';
+					// console.log( 'item_input_'.concat(listName).concat(i));
+					// console.log(document.getElementById('item_input_'.concat(listName).concat(i)).innerText);
+					// document.getElementById('item_input_'.concat(listName).concat(i)).style='display:block';
+					document.getElementById(input_id).outerHTML = null;
+					//location.reload();
+				console.log(3);
+				}
+			};
+			//console.log(userID);
+			//get DOM data and send to server php side
+			//var i = document.getElementById(str).value;
+			var url = "changeItem.php?l=".concat(listName)
+									.concat("&i=").concat(i)
+										.concat("&o=").concat(arrayitem);
+			xmlhttp.open("GET",url,true);
+			xmlhttp.send();	
+		}
+	}
+
+
 
 	function makeCheckBox(domID, arrayitem, isChecked,listName) {
 	    // Create the list element:
 	        // Create the list item:
 	        var item = document.createElement('input');	
-			item.id = "item_".concat(listName).concat(arrayitem).concat(isChecked);
+			//	item.id = "item_input_".concat(listName).concat(arrayitem);
 			item.class= "isChecked";
 			item.type="checkbox";
 			var data = document.getElementById("item_".concat(listName).concat(arrayitem));
@@ -225,7 +296,7 @@ session_start();
 			}
 			else
 				item.checked= false;
-			item.onclick=function(){updateCheckBox(item.id, listName,arrayitem,"abc");}
+			item.onclick=function(){updateCheckBox(domID, listName,arrayitem,"abc");}
 																	
 			
 	        // Add it to the list:
@@ -239,7 +310,7 @@ session_start();
 	    // Create the list element:
 	        // Create the list item:
 	        var item = document.createElement('input');
-			item.id = "item_".concat(listName).concat(itemName);
+			item.id = "item_del_".concat(listName).concat(itemName); // not necessary , but need improvemnt in code to remove this
 			item.class= "del";
 			item.type="button";
 			item.value="x";
@@ -325,9 +396,9 @@ session_start();
 					//	document.getElementById('demo21').outerHTML=myObj[2].listName;
 					//document.getElementById('demo21').innerHTML=myObj[i].listName;
 					//console.log(i);
-					console.log(j);
+					//console.log(j);
 					makeli(document.getElementById('list_'.concat(lName)), myObj[j].itemName,lName, myObj[j].isChecked);
-//					//makeCheckBox(document.getElementById('list_'.concat(lName)), myObj[i].itemName, myObj[i].isChecked,lName);
+					//makeCheckBox(document.getElementById('list_'.concat(lName)), myObj[i].itemName, myObj[i].isChecked,lName);
 					
 					j++;
 				}
