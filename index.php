@@ -1,13 +1,13 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="mystyle.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">	
+<link rel="stylesheet" type="text/css" href="mystyle.css">
 
 </head>
 <body>
 
 	<div>
-		<div class="card">
+		<div class="container-fluid">
 			<h2>Login Page</h2>
 			<h3>Enter User Name and Password</h3>
 				<form action="login.php" method="POST">
@@ -20,7 +20,7 @@
 	</div>
 
 	<div>
-		<div class="card">
+		<div class="container-fluid">
 			<h2>SignUp Page</h2>
 			<h3>Enter User Name and Password</h3>
 				<form action="signup.php" method="POST">

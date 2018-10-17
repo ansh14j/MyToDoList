@@ -9,15 +9,13 @@ session_start();
 		if(! $conn ) {
       		die('Could not connect: ' . mysqli_connect_error());
    		}
-        //   echo 'Connected successfully</p>';
 
         if (isset($_GET['l'])) {
             $currentListName = $_GET['l'];
             $currentUserID = intval($_SESSION['loginUserID']);
-            //echo $currentUserID;
 
             //Getting items from list
-            $sql2 = "SELECT itemName, isChecked FROM itemsList 
+            $sql2 = "SELECT itemName, isChecked, itemID FROM itemsList 
                         WHERE listName = '$currentListName' 
                             AND userID = '$currentUserID'";
             $retval = mysqli_query($conn, $sql2);
@@ -31,7 +29,4 @@ session_start();
             }
             echo json_encode($rows);
         }
-
-        
-
 ?>
