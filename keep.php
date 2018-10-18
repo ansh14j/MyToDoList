@@ -36,8 +36,8 @@ session_start();
         }
     }
 	function deleteItem(domItem,l,i) {
-		var r = confirm("Do you want to delete it!");
-    	if (r == true) {
+		// var r = confirm("Do you want to delete it!");
+    	// if (r == true) {
 			xmlhttp = new XMLHttpRequest();
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -51,7 +51,7 @@ session_start();
 											.concat("&i=").concat(i);
 			xmlhttp.open("GET",url,true);
 			xmlhttp.send();
-		}
+		// }
 	}
 	function deleteList(domList, l){
 		var r = confirm("Do you want to delete it!");
@@ -175,8 +175,14 @@ session_start();
 		list.insertBefore(newItem, domItem);
 		domItem.previousSibling.focus();
 		domItem.style='display:none';	
-		newItem.onblur=function(){changeData(domItem,arrayitem,listName);}
-		newItem.onkeydown=function(){changeDataOnEnter(event, domItem,arrayitem,listName);}
+		newItem.onblur=function(){
+			if(this.value != "")
+				changeData(domItem,arrayitem,listName);
+		}
+		newItem.onkeydown=function(){
+			if(this.value != "")
+				changeDataOnEnter(event, domItem,arrayitem,listName);
+		}
 	}
 	function changeDataOnEnter(event, domItem,arrayitem,listName){
 		var x = event.key;
