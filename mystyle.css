@@ -4,7 +4,19 @@ input[type=text] {
     margin: 8px 0;
     box-sizing: border-box;
     outline: none;
-    font: 80% arial;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 80%;
+}
+
+#new {
+    width: 100%;
+    border:none; 
+    border-bottom:1px solid lightgrey; 
+    border-top:1px solid lightgrey;
+    outline: none;
+    padding:4px 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 80%;
 }
 
 input[type=password] {
@@ -56,9 +68,12 @@ body {
 
 
 ul{
+    list-style-type:none;
     text-transform: capitalize;
     font-weight: bold;
-    font:20px arial;
+    font-family: 'Montserrat', sans-serif;
+    /*font:20px arial;*/
+    font-size: : 20px;
     width: 250px;
     height: 200px;
     margin:10px;
@@ -94,7 +109,7 @@ input[value='x']:hover{
 }
 
 li{
-    font-family: "Times New Roman", Times, serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: normal;
     padding: 2px 2px;
@@ -102,7 +117,7 @@ li{
 
 li:hover{
     background-color: lightgrey;
-    font-family: "Times New Roman", Times, serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: normal;
     padding: 2px 2px;
