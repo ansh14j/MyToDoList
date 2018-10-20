@@ -22,7 +22,7 @@ if (!$con) {
 
 //$sql="UPDATE itemsList SET isChecked = '.$q.' WHERE itemName = '.$i.' AND listName = '.$l.'";
 // doubt don't know why above is not working
-$sql="UPDATE itemsList SET isChecked = ".$q." WHERE itemName = '".$i."' AND listName = '".$l."' AND userID = '".$u."'";
+$sql="UPDATE itemsList SET isChecked = ".$q." WHERE itemID = '".$i."' AND listID = '".$l."' AND userID = '".$u."'";
 
 $result = mysqli_query($con,$sql);
 

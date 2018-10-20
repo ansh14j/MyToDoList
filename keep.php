@@ -17,21 +17,21 @@ session_start();
 
 
 	<script>
-	function updateCheckBox(domItem,list,item) {
+	function updateCheckBox(domItem,lId,iId) {
         xmlhttp = new XMLHttpRequest();
         //get DOM data and send to server php side
 		
 		let checkBox = domItem.childNodes[2];
 		if (checkBox.checked == true){
-        		var url = "updateCheckBox.php?q=1&l=".concat(list)
-											.concat("&i=").concat(item);
+        		var url = "updateCheckBox.php?q=1&l=".concat(lId)
+											.concat("&i=").concat(iId);
 			domItem.style='text-decoration:line-through;opacity: .5';
 				
             xmlhttp.open("GET",url,true);
 	        xmlhttp.send();
         } else {
-        		var url = "updateCheckBox.php?q=0&l=".concat(list)
-											.concat("&i=").concat(item);
+        		var url = "updateCheckBox.php?q=0&l=".concat(lId)
+											.concat("&i=").concat(iId);
 				domItem.style='text-decoration:none';
            	xmlhttp.open("GET",url,true);
     		xmlhttp.send();
@@ -128,7 +128,7 @@ session_start();
 	function makeUL(domId,lName,lId) {
 		// Create the list item:
 		let item = document.createElement('ul');
-		item.id = "list_".concat(lId).concat(lName)
+		item.id = "lId";
 		// Set its contents:
 		item.appendChild(document.createTextNode(lName));
 		// Add it to the list:
@@ -136,7 +136,7 @@ session_start();
 	    // Finally, return the constructed list:
 	    return domList;
 	}
-	function makeli(domList,arrayitem,listName, isChecked) {
+	function makeli(domList,arrayitem,iId, lId, isChecked) {
 	    // Create the list element:
 	        // Create the list item:
 	        let item = document.createElement('li');
@@ -148,12 +148,13 @@ session_start();
 
 	        // Add it to the list:
 			let domItem = domList.appendChild(item);
-			makeDelete(domItem,listName,arrayitem);
-			makeCheckBox(domItem, arrayitem, isChecked, listName);
+			domItem.id = "iId";
+			makeDelete(domItem,lId,iId);
+			makeCheckBox(domItem, iId, isChecked, lId);
 
-			domItem.childNodes[0].onclick=function(){makeChangeTextBox(domItem,arrayitem,listName);}
+			domItem.childNodes[0].onclick=function(){makeChangeTextBox(domItem,iId,lId);}
 	}
-	function makeChangeTextBox(domItem,arrayitem,listName){
+	function makeChangeTextBox(domItem,iId,lId){
 		var domArrayItem = domItem.childNodes[0].innerText;
 		var newItem = document.createElement("input");
 		newItem.value = domArrayItem;
@@ -165,24 +166,29 @@ session_start();
 		domItem.style='display:none';	
 		newItem.onblur=function(){
 			if(this.value != "")
-				changeData(domItem,arrayitem,listName);
+				changeData(domItem,iId,lId);
 		}
 		newItem.onkeydown=function(){
 			if(this.value != "")
-				changeDataOnEnter(event, domItem,arrayitem,listName);
+				changeDataOnEnter(event, domItem,iId,lId);
 		}
 	}
-	function changeDataOnEnter(event, domItem,arrayitem,listName){
+	function changeDataOnEnter(event, domItem,iId,lId){
 		var x = event.key;
 			
 		if(x==="Enter"){
-			if(domItem.nextSibling !==domItem.parentNode.lastChild)
-				makeChangeTextBox(domItem.nextSibling,domItem.nextSibling.childNodes[0].innerText,listName);
+			if(domItem.nextSibling !==domItem.parentNode.lastChild){
+			// 	console.log(domItem.nextSibling.id);
+			// console.log(domItem.nextSibling);
+			// console.log(domItem);
+				changeData(domItem, iId, lId);
+				makeChangeTextBox(domItem.nextSibling,domItem.nextSibling.id,lId);
+			}
 			else
 				domItem.parentNode.lastChild.focus();
 		}
 	}
-	function changeData(domItem,arrayitem,listName, input_id){
+	function changeData(domItem,iId,lId, input_id){
 		var i = domItem.previousSibling.value;			
 		xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
@@ -196,13 +202,13 @@ session_start();
 					domItem.previousSibling.outerHTML = null;
 			}
 		};
-		var url = "changeItem.php?l=".concat(listName)
+		var url = "changeItem.php?l=".concat(lId)
 								.concat("&i=").concat(i)
-									.concat("&o=").concat(arrayitem);
+									.concat("&o=").concat(iId);
 		xmlhttp.open("GET",url,true);
 		xmlhttp.send();	
 	}
-	function makeCheckBox(domItem, arrayitem, isChecked,listName) {
+	function makeCheckBox(domItem, iId, isChecked,lId) {
 	        // Create the list item:
 	        var item = document.createElement('input');	
 			item.class= "isChecked";
@@ -213,40 +219,40 @@ session_start();
 			}
 			else
 				item.checked= false;
-			item.onclick=function(){updateCheckBox(domItem, listName,arrayitem);}
+			item.onclick=function(){updateCheckBox(domItem, lId, iId);}
 																				
 	        // Add it to the list:
 	        domItem.appendChild(item);
 	}
-	function makeDelete(domItem,listName,itemName) {
+	function makeDelete(domItem,lId,iId) {
 	        // Create the list item:
 	        var item = document.createElement('input');
 			item.class= "del";
 			item.type="button";
 			item.value="x";
-			item.onclick=function(){deleteItem(domItem, listName, itemName);}
+			item.onclick=function(){deleteItem(domItem, lId, iId);}
 																				
 	        // Add it to the list:
 	        domItem.appendChild(item);
 	}	
-	function makeDeleteList(domList,listName) {
+	function makeDeleteList(domList,lId) {
 	        // Create the list item:
 	        var item = document.createElement('input');
 			item.classList= "del2";
 			item.type="button";
 			item.value="Delete List";
-			item.onclick=function(){deleteList(domList, listName);}
+			item.onclick=function(){deleteList(domList, lId);}
 																				
 	        // Add it to the list:
 	        domList.appendChild(item);
 	}	
-	function makeInputText(domList,listName) {
+	function makeInputText(domList,lId) {
 	        // Create the list item:
 	        var item = document.createElement('input');
-			item.id = "input_".concat(listName);
+			//item.id = "input_".concat(lId);
 			item.type="text";
 			item.required="required";
-			item.onkeydown=function(){enterPressed(event, domList, listName);}											
+			item.onkeydown=function(){enterPressed(event, domList, lId);}											
 	        // Add it to the list:
 	        domList.appendChild(item);
 	}
@@ -259,7 +265,7 @@ session_start();
 				while(myObj[i])
 				{
 					let domList = makeUL(document.getElementById('demo21'), myObj[i].listName, myObj[i].listID);
-					getItems(domList, myObj[i].listName);
+					getItems(domList, myObj[i].listID);
 					i++;
 				}
 	 		}
@@ -268,22 +274,22 @@ session_start();
         xmlhttp.open("GET",url,true);
 		xmlhttp.send();
 	}
-	function getItems(domList, lName){
+	function getItems(domList, lId){
 		xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				let myObj = JSON.parse(this.responseText);
 				let j = 0;	
-				makeDeleteList(domList, lName);	
+				makeDeleteList(domList, lId);	
 				while(myObj[j])
 				{
-					makeli(domList, myObj[j].itemName, lName, myObj[j].isChecked);
+					makeli(domList, myObj[j].itemName, myObj[j].itemID, lId, myObj[j].isChecked);
 					j++;
 				}
-				makeInputText(domList,lName);
+				makeInputText(domList,lId);
 	 		}
 		};
-		var url = "getItem.php?l=".concat(lName);
+		var url = "getItem.php?l=".concat(lId);
         xmlhttp.open("GET",url,true);
 		xmlhttp.send();		
 	}

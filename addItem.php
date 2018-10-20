@@ -13,11 +13,11 @@ session_start();
 
         if (isset($_GET['i'])) {
             $newItem = $_GET['i'];
-            $currentListName = $_GET['l'];
+            $currentListID = $_GET['l'];
             //$currentUserID = intval($_GET['u']);
             $currentUserID = intval($_SESSION['loginUserID']);
-            $sql = "INSERT INTO itemsList(itemName,listName,isChecked,userID) 
-                        VALUES ('$newItem','$currentListName',false,'$currentUserID')";
+            $sql = "INSERT INTO itemsList(itemName,list,isChecked,userID) 
+                        VALUES ('$newItem','$currentListID',false,'$currentUserID')";
             $retval = mysqli_query($conn, $sql);
             if(!$retval){
                 die('Could not set data: ' . mysqli_error());	

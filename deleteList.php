@@ -12,12 +12,12 @@ session_start();
            echo 'Connected successfully</p';
            //echo $_GET['i'];           
         if (isset($_GET['l'])) {
-    		$currentListName = $_GET['l'];
+    		$currentListID = $_GET['l'];
 			//$currentUserID = intval($_GET['u']);
             $currentUserID = intval($_SESSION['loginUserID']);
             //deleting List from database
 		    $sql = "DELETE FROM itemsList 
-					WHERE listName = '$currentListName' 
+					WHERE listID = '$currentListID' 
 						AND userID = '$currentUserID'";
             $retval = mysqli_query($conn, $sql);
             echo "$sql";
@@ -27,7 +27,7 @@ session_start();
             }
             //deleting listName from list
     		$sql2 = "DELETE FROM lists 
-                    WHERE listName = '$currentListName' 
+                    WHERE listID = '$currentListID' 
                         AND userID = '$currentUserID'";
             $retval = mysqli_query($conn, $sql2);
             if(!$retval){

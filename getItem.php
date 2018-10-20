@@ -11,12 +11,12 @@ session_start();
    		}
 
         if (isset($_GET['l'])) {
-            $currentListName = $_GET['l'];
+            $currentListID = $_GET['l'];
             $currentUserID = intval($_SESSION['loginUserID']);
 
             //Getting items from list
             $sql2 = "SELECT itemName, isChecked, itemID FROM itemsList 
-                        WHERE listName = '$currentListName' 
+                        WHERE listID = '$currentListID' 
                             AND userID = '$currentUserID'";
             $retval = mysqli_query($conn, $sql2);
             if(! $retval ) {
